@@ -1,0 +1,19 @@
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.tmp
+*.bak
+
+# Environment files
+.env
+.env.local
+.env*.local
+
+# Dependency directories (handled by sub .gitignores)
+*/node_modules/
+
+# Build directories
+frontend/build/
+backend/dist/
