@@ -1,17 +1,17 @@
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef, useEffect } from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface SearchableDropdownProps {
-  id: string
-  name: string
-  value: string
-  options: string[]
-  onChange: (value: string) => void
-  placeholder: string
-  error?: string
-  onAddOption?: (value: string) => void
+  id: string;
+  name: string;
+  value: string;
+  options: string[];
+  onChange: (value: string) => void;
+  placeholder: string;
+  error?: string;
+  onAddOption?: (value: string) => void;
 }
 
 export default function SearchableDropdown({
@@ -24,58 +24,69 @@ export default function SearchableDropdown({
   error,
   onAddOption,
 }: SearchableDropdownProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState(value)
-  const [filteredOptions, setFilteredOptions] = useState<string[]>(options)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(value);
+  const [filteredOptions, setFilteredOptions] = useState<string[]>(options);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Filter options when search term changes
   useEffect(() => {
     if (searchTerm === "") {
-      setFilteredOptions(options)
+      setFilteredOptions(options);
     } else {
-      const filtered = options.filter((option) => option.toLowerCase().includes(searchTerm.toLowerCase()))
-      setFilteredOptions(filtered)
+      const filtered = options.filter((option) =>
+        option.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredOptions(filtered);
     }
-  }, [searchTerm, options])
+  }, [searchTerm, options]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
 
         // If the search term is not in options and not empty, add it as a new option
-        if (searchTerm && !options.some((option) => option.toLowerCase() === searchTerm.toLowerCase()) && onAddOption) {
-          onAddOption(searchTerm)
-          onChange(searchTerm)
+        if (
+          searchTerm &&
+          !options.some(
+            (option) => option.toLowerCase() === searchTerm.toLowerCase()
+          ) &&
+          onAddOption
+        ) {
+          onAddOption(searchTerm);
+          onChange(searchTerm);
         }
       }
-    }
+    };
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [searchTerm, options, onAddOption, onChange, isOpen])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchTerm, options, onAddOption, onChange, isOpen]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value)
-    onChange(e.target.value)
-  }
+    setSearchTerm(e.target.value);
+    onChange(e.target.value);
+  };
 
   const handleOptionClick = (option: string) => {
-    setSearchTerm(option)
-    onChange(option)
-    setIsOpen(false)
-  }
+    setSearchTerm(option);
+    onChange(option);
+    setIsOpen(false);
+  };
 
   const handleInputFocus = () => {
-    setIsOpen(true)
-  }
+    setIsOpen(true);
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -112,19 +123,22 @@ export default function SearchableDropdown({
                   className="px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 cursor-pointer flex items-center justify-between"
                 >
                   {option}
-                  {option.toLowerCase() === searchTerm.toLowerCase() && <Check size={16} className="text-purple-600" />}
+                  {option.toLowerCase() === searchTerm.toLowerCase() && (
+                    <Check size={16} className="text-purple-600" />
+                  )}
                 </li>
               ))}
             </ul>
           ) : (
             <div className="px-4 py-2 text-sm text-gray-500">
-              No matches found. Press Enter to add "{searchTerm}" as a new option.
+              No matches found. Press Enter to add "{searchTerm}" as a new
+              option.
             </div>
           )}
         </div>
       )}
 
-      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+      {error && <p className="text-left mt-1 text-sm text-red-600">{error}</p>}
     </div>
-  )
+  );
 }

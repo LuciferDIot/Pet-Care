@@ -2,25 +2,39 @@
 
 import type React from "react";
 
-import type { Pet } from "@/types/pet";
+import { usePetById } from "@/hooks/usePetById";
+import { getSpeciesImage } from "@/lib/pet-utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { Calendar, Clock, Heart, X } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { toast } from "react-toastify";
 import MoodBadge from "./mood-badge";
-import { getSpeciesImage } from "@/lib/pet-utils";
 
 interface PetDetailsModalProps {
-  pet: Pet;
+  petId: string;
   onClose: () => void;
   onAdopt?: () => void; // Add onAdopt prop
 }
 
 export default function PetDetailsModal({
-  pet,
+  petId,
   onClose,
   onAdopt,
 }: PetDetailsModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const { data: pet, isLoading, isError, error } = usePetById(petId);
+
+  useEffect(() => {
+    if (isError && error) {
+      toast.error(error.message);
+    }
+  }, [isError, error]);
+
+  const handleAdoptClick = () => {
+    onAdopt?.();
+    onClose();
+  };
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -28,12 +42,36 @@ export default function PetDetailsModal({
     }
   };
 
-  const handleAdoptClick = () => {
-    if (onAdopt) {
-      onAdopt();
-    }
-    onClose();
-  };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-bounce flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-purple-600 font-medium">Loading pet details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !pet) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+          <div className="text-center">
+            <h2 className="text-xl font-bold text-red-600 mb-4">
+              Failed to load pet details
+            </h2>
+            <button
+              onClick={onClose}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const timeInSystem = formatDistanceToNow(pet.created_at, {
     addSuffix: false,
@@ -64,7 +102,8 @@ export default function PetDetailsModal({
             <div className="relative">
               <img
                 src={
-                  getSpeciesImage(pet.species, pet.image) || "/placeholder.svg"
+                  getSpeciesImage(pet.species.name, pet.image) ||
+                  "/placeholder.svg"
                 }
                 alt={`${pet.name} the ${pet.species}`}
                 className="w-full h-64 md:h-80 object-cover"
@@ -85,10 +124,10 @@ export default function PetDetailsModal({
 
             <div className="flex items-center gap-2 mb-4">
               <span className="text-lg font-medium text-purple-700">
-                {pet.species}
+                {pet.species.name}
               </span>
               <span className="text-gray-400">•</span>
-              <span className="text-gray-600">{pet.personality}</span>
+              <span className="text-gray-600">{pet.personality.name}</span>
             </div>
 
             <div className="space-y-4 mb-6">

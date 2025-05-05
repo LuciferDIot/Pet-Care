@@ -142,7 +142,7 @@ export default function PersonalityQuiz({
 
       // Match based on personality keywords
       dominantTraits.forEach((trait) => {
-        if (pet.personality.toLowerCase().includes(trait.toLowerCase())) {
+        if (pet.personality.name.toLowerCase().includes(trait.toLowerCase())) {
           score += 2;
         }
       });
@@ -247,9 +247,9 @@ export default function PersonalityQuiz({
 
               <div className="bg-purple-50 p-4 rounded-lg mb-4">
                 <p className="text-lg font-semibold text-purple-800">
-                  {matchedPet.name} the {matchedPet.species}
+                  {matchedPet.name} the {matchedPet.species.name}
                 </p>
-                <p className="text-gray-600">{matchedPet.personality}</p>
+                <p className="text-gray-600">{matchedPet.personality.name}</p>
                 <p className="text-sm mt-2">
                   Current mood:{" "}
                   <span className="font-medium">{matchedPet.mood}</span>

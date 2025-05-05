@@ -42,7 +42,7 @@ export default function PetCard({
       <div className="relative">
         <img
           src={
-            getSpeciesImage(pet.species, pet.image, 200, 200) ||
+            getSpeciesImage(pet.species.name, pet.image, 200, 200) ||
             "/placeholder.svg"
           }
           alt={`${pet.name} the ${pet.species}`}
@@ -79,7 +79,7 @@ export default function PetCard({
         </div>
 
         <p className="text-gray-600 mb-2">
-          {pet.species} • {pet.personality}
+          {pet.species.name} • {pet.personality.name}
         </p>
 
         <div className="flex items-center text-xs text-gray-500 mb-4">

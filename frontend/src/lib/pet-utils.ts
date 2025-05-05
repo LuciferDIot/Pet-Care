@@ -1,4 +1,4 @@
-import { MoodEnum, type Pet } from "@/types/pet";
+import { MoodEnum, Personality, Species, type Pet } from "@/types/pet";
 
 const petNames = [
   "Luna",
@@ -19,26 +19,26 @@ const petNames = [
   "Teddy",
 ];
 
-export const defaultSpecies = [
-  "Dog",
-  "Cat",
-  "Rabbit",
-  "Bird",
-  "Hamster",
-  "Guinea Pig",
-  "Ferret",
+export const defaultSpecies: Species[] = [
+  { id: "dog", name: "Dog" },
+  { id: "cat", name: "Cat" },
+  { id: "rabbit", name: "Rabbit" },
+  { id: "bird", name: "Bird" },
+  { id: "hamster", name: "Hamster" },
+  { id: "guinea-pig", name: "Guinea Pig" },
+  { id: "ferret", name: "Ferret" },
 ];
 
-export const defaultPersonalities = [
-  "Playful and energetic",
-  "Calm and affectionate",
-  "Curious and adventurous",
-  "Shy but loving",
-  "Independent and clever",
-  "Friendly and outgoing",
-  "Gentle and patient",
-  "Mischievous and fun",
-  "Loyal and protective",
+export const defaultPersonalities: Personality[] = [
+  { id: "1", name: "Playful and energetic" },
+  { id: "2", name: "Calm and affectionate" },
+  { id: "3", name: "Curious and adventurous" },
+  { id: "4", name: "Shy but loving" },
+  { id: "5", name: "Independent and clever" },
+  { id: "6", name: "Friendly and outgoing" },
+  { id: "7", name: "Gentle and patient" },
+  { id: "8", name: "Mischievous and fun" },
+  { id: "9", name: "Loyal and protective" },
 ];
 
 const petDescriptions = [

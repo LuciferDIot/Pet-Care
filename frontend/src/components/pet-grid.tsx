@@ -1,3 +1,5 @@
+import { usePetMutations } from "@/hooks/usePets";
+import { usePetStore } from "@/stores/pet-store";
 import type { Pet } from "@/types/pet";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -7,21 +9,24 @@ import PetCard from "./pet-card";
 import PetDetailsModal from "./pet-details-modal";
 
 interface PetGridProps {
-  pets: Pet[];
   onEdit: (pet: Pet) => void;
-  onDelete: (id: string) => void;
-  onAdopt: (id: string) => void;
 }
 
-export default function PetGrid({
-  pets,
-  onEdit,
-  onDelete,
-  onAdopt,
-}: PetGridProps) {
+export default function PetGrid({ onEdit }: PetGridProps) {
   const [petToDelete, setPetToDelete] = useState<Pet | null>(null);
   const [petToAdopt, setPetToAdopt] = useState<Pet | null>(null);
-  const [petToView, setPetToView] = useState<Pet | null>(null);
+  const [petIdToView, setPetId] = useState<string | null>(null);
+
+  const pets = usePetStore((state) => state.filteredPets);
+  const { deletePetMutation, adoptPetMutation } = usePetMutations();
+
+  const onDelete = (id: string) => {
+    deletePetMutation.mutate(id);
+  };
+
+  const onAdopt = (id: string) => {
+    adoptPetMutation.mutate(id);
+  };
 
   const handleDeleteClick = (pet: Pet) => {
     setPetToDelete(pet);
@@ -29,10 +34,6 @@ export default function PetGrid({
 
   const handleAdoptClick = (pet: Pet) => {
     setPetToAdopt(pet);
-  };
-
-  const handleViewClick = (pet: Pet) => {
-    setPetToView(pet);
   };
 
   const confirmDelete = () => {
@@ -49,9 +50,9 @@ export default function PetGrid({
   };
 
   const handleAdoptFromDetails = () => {
-    if (petToView) {
-      onAdopt(petToView.id);
-      setPetToView(null);
+    if (petIdToView) {
+      onAdopt(petIdToView);
+      setPetId(null);
     }
   };
 
@@ -88,7 +89,7 @@ export default function PetGrid({
               onEdit={() => onEdit(pet)}
               onDelete={() => handleDeleteClick(pet)}
               onAdopt={() => handleAdoptClick(pet)}
-              onView={() => handleViewClick(pet)}
+              onView={() => setPetId(pet.id)}
             />
           ))}
         </motion.div>
@@ -110,10 +111,10 @@ export default function PetGrid({
         />
       )}
 
-      {petToView && (
+      {petIdToView && (
         <PetDetailsModal
-          pet={petToView}
-          onClose={() => setPetToView(null)}
+          petId={petIdToView}
+          onClose={() => setPetId(null)}
           onAdopt={handleAdoptFromDetails}
         />
       )}

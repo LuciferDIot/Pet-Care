@@ -130,7 +130,7 @@ export default function AdoptionModal({
               <p className="text-xl font-bold text-purple-900 mb-2">YOU</p>
               <p className="mb-2">have officially adopted</p>
               <p className="text-xl font-bold text-purple-900 mb-2">
-                {pet.name} the {pet.species}
+                {pet.name} the {pet.species.name}
               </p>
               <p className="mb-4">on {formatDate(new Date())}</p>
 
