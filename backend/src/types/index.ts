@@ -28,3 +28,19 @@ export interface Species {
   id: string;
   name: string;
 }
+
+// Define a type for the populated pet document
+export interface PopulatedPet {
+  _id: string;
+  name: string;
+  species: { _id: string; name: string };
+  age: number;
+  personality: { _id: string; name: string };
+  description: string;
+  image?: string;
+  mood: string;
+  adopted: boolean;
+  adoption_date?: Date;
+  created_at: Date;
+  __v?: number; // Include __v as optional since lean() includes it
+}

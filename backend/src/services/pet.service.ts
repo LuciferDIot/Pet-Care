@@ -1,8 +1,7 @@
-import { LeanDocument } from "mongoose";
 import PersonalityModel from "../models/personalityModel";
 import PetModel from "../models/petModel";
 import SpeciesModel from "../models/speciesModel";
-import { Personality, Pet, Species } from "../types";
+import { Personality, Pet, PopulatedPet, Species } from "../types";
 import { calculateMood } from "../utils/moodLogic";
 
 export const PetService = {
@@ -27,7 +26,8 @@ export const PetService = {
 
       if (!populatedPet) throw new Error("Failed to create pet");
 
-      return this.mapToPetDTO(populatedPet);
+      // Cast to unknown first, then to PopulatedPet
+      return this.mapToPetDTO(populatedPet as unknown as PopulatedPet);
     } catch (error) {
       console.error("Error creating pet:", error);
       throw error;
@@ -42,7 +42,9 @@ export const PetService = {
         .populate("personality")
         .lean();
 
-      return pets.map((pet) => this.mapToPetDTO(pet));
+      return pets.map((pet) =>
+        this.mapToPetDTO(pet as unknown as PopulatedPet)
+      );
     } catch (error) {
       console.error("Error fetching pets:", error);
       throw error;
@@ -57,7 +59,7 @@ export const PetService = {
         .populate("personality")
         .lean();
 
-      return pet ? this.mapToPetDTO(pet) : null;
+      return pet ? this.mapToPetDTO(pet as unknown as PopulatedPet) : null;
     } catch (error) {
       console.error("Error fetching pet:", error);
       throw error;
@@ -82,7 +84,7 @@ export const PetService = {
 
       if (!updatedPet) throw new Error("Pet not found");
 
-      return this.mapToPetDTO(updatedPet);
+      return this.mapToPetDTO(updatedPet as unknown as PopulatedPet);
     } catch (error) {
       console.error("Error updating pet:", error);
       throw error;
@@ -117,7 +119,7 @@ export const PetService = {
 
       if (!adoptedPet) throw new Error("Pet not found");
 
-      return this.mapToPetDTO(adoptedPet);
+      return this.mapToPetDTO(adoptedPet as unknown as PopulatedPet);
     } catch (error) {
       console.error("Error adopting pet:", error);
       throw error;
@@ -210,7 +212,7 @@ export const PetService = {
   },
 
   // Helper method to map database documents to DTOs
-  mapToPetDTO(pet: LeanDocument<any>): Pet {
+  mapToPetDTO(pet: PopulatedPet): Pet {
     return {
       id: pet._id.toString(),
       name: pet.name,
