@@ -37,14 +37,14 @@ export default function PetGrid({ onEdit }: PetGridProps) {
   };
 
   const confirmDelete = () => {
-    if (petToDelete) {
+    if (petToDelete && petToDelete.id) {
       onDelete(petToDelete.id);
       setPetToDelete(null);
     }
   };
 
   const confirmAdopt = () => {
-    if (petToAdopt) {
+    if (petToAdopt && petToAdopt.id) {
       onAdopt(petToAdopt.id);
     }
   };
@@ -89,7 +89,7 @@ export default function PetGrid({ onEdit }: PetGridProps) {
               onEdit={() => onEdit(pet)}
               onDelete={() => handleDeleteClick(pet)}
               onAdopt={() => handleAdoptClick(pet)}
-              onView={() => setPetId(pet.id)}
+              onView={() => setPetId(pet.id ?? null)}
             />
           ))}
         </motion.div>

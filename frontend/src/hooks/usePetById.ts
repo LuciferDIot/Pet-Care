@@ -1,4 +1,4 @@
-import { petService } from "@/services/petServices";
+import { petService } from "@/services/pet.service";
 import { usePetStore } from "@/stores/pet-store";
 import { Pet } from "@/types/pet";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
