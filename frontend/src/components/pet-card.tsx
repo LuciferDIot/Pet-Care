@@ -1,11 +1,11 @@
 "use client";
 
 import type { Pet } from "@/types/pet";
-import MoodBadge from "./mood-badge";
-import { Edit, Trash2, Heart, Clock, Eye } from "lucide-react";
-import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
-import { getSpeciesImage } from "@/lib/pet-utils";
+import { motion } from "framer-motion";
+import { Clock, Edit, Eye, Heart, Trash2 } from "lucide-react";
+import MoodBadge from "./mood-badge";
+import { PetImage } from "./pet-image";
 
 interface PetCardProps {
   pet: Pet;
@@ -40,12 +40,10 @@ export default function PetCard({
       whileHover={{ y: -5 }}
     >
       <div className="relative">
-        <img
-          src={
-            getSpeciesImage(pet.species.name, pet.image, 200, 200) ||
-            "/placeholder.svg"
-          }
-          alt={`${pet.name} the ${pet.species}`}
+        <PetImage
+          image={pet.image}
+          name={pet.name}
+          species={pet.species.name}
           className="w-full h-48 object-cover"
         />
         <MoodBadge mood={pet.mood} className="absolute top-3 right-3" />

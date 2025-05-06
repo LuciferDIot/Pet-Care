@@ -1,14 +1,14 @@
 "use client";
 
 import { usePetMutations } from "@/hooks/usePets";
-import { getSpeciesImage } from "@/lib/pet-utils";
-import { petFormSchema, PetFormValues } from "@/schema/pet-form.schema";
+import { petCreateFormSchema, PetFormValues } from "@/schema/pet-form.schema";
 import { usePetStore } from "@/stores/pet-store";
 import { MoodEnum, type Pet } from "@/types/pet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Upload, X } from "lucide-react";
 import { useRef } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { PetImage } from "./pet-image";
 import SearchableDropdown from "./searchable-dropdown";
 
 interface PetFormProps {
@@ -49,7 +49,7 @@ export default function PetForm({ onCancel }: PetFormProps) {
     formState: { errors },
     setValue,
   } = useForm<PetFormValues>({
-    resolver: zodResolver(petFormSchema),
+    resolver: zodResolver(petCreateFormSchema),
     defaultValues,
   });
 
@@ -145,11 +145,10 @@ export default function PetForm({ onCancel }: PetFormProps) {
           {/* Image Upload */}
           <div className="flex flex-col items-center mb-4">
             <div className="relative w-32 h-32 mb-3">
-              <img
-                src={
-                  image || getSpeciesImage(species, editingPet?.image, 200, 200)
-                }
-                alt="Pet preview"
+              <PetImage
+                image={image || editingPet?.image}
+                name={editingPet?.name || "Form Preview"}
+                species={species}
                 className="w-full h-full object-cover rounded-lg border"
               />
               <label

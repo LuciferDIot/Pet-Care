@@ -3,12 +3,12 @@
 import type React from "react";
 
 import { usePetById } from "@/hooks/usePetById";
-import { getSpeciesImage } from "@/lib/pet-utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { Calendar, Clock, Heart, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import MoodBadge from "./mood-badge";
+import { PetImage } from "./pet-image";
 
 interface PetDetailsModalProps {
   petId: string;
@@ -100,12 +100,10 @@ export default function PetDetailsModal({
         <div className="flex flex-col md:flex-row">
           <div className="md:w-1/2">
             <div className="relative">
-              <img
-                src={
-                  getSpeciesImage(pet.species.name, pet.image) ||
-                  "/placeholder.svg"
-                }
-                alt={`${pet.name} the ${pet.species}`}
+              <PetImage
+                image={pet.image}
+                name={pet.name}
+                species={pet.species.name}
                 className="w-full h-64 md:h-80 object-cover"
               />
               <div className="absolute top-4 right-4">
