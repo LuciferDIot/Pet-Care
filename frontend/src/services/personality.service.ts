@@ -1,4 +1,8 @@
 import { apiEndpoints } from "@/data";
+import {
+  PersonalityArraySchema,
+  PersonalitySchema,
+} from "@/schema/personality.schema";
 import { Personality } from "@/types/pet";
 import { api } from "./api";
 
@@ -6,7 +10,8 @@ import { api } from "./api";
 export const personalityService = {
   fetchAll: async (): Promise<Personality[]> => {
     const response = await api.get(apiEndpoints.getAllPersonalities);
-    return response.data;
+    const validatedData = PersonalityArraySchema.parse(response.data);
+    return validatedData;
   },
 
   create: async (
@@ -16,7 +21,8 @@ export const personalityService = {
       apiEndpoints.createPersonality,
       newPersonality
     );
-    return response.data;
+    const validatedData = PersonalitySchema.parse(response.data);
+    return validatedData;
   },
 
   update: async (personality: Personality): Promise<Personality> => {
@@ -27,7 +33,8 @@ export const personalityService = {
       apiEndpoints.updatePersonality(personality.id),
       personality
     );
-    return response.data;
+    const validatedData = PersonalitySchema.parse(response.data);
+    return validatedData;
   },
 
   delete: async (id: string): Promise<string> => {

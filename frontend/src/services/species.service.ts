@@ -1,4 +1,5 @@
 import { apiEndpoints } from "@/data";
+import { SpeciesArraySchema, SpeciesSchema } from "@/schema/species.schema";
 import { Species } from "@/types/pet";
 import { api } from "./api";
 
@@ -6,12 +7,14 @@ import { api } from "./api";
 export const speciesService = {
   fetchAll: async (): Promise<Species[]> => {
     const response = await api.get(apiEndpoints.getAllSpecies);
-    return response.data;
+    const validatedData = SpeciesArraySchema.parse(response.data);
+    return validatedData;
   },
 
   create: async (newSpecies: Omit<Species, "id">): Promise<Species> => {
     const response = await api.post(apiEndpoints.createSpecies, newSpecies);
-    return response.data;
+    const validatedData = SpeciesSchema.parse(response.data);
+    return validatedData;
   },
 
   update: async (species: Species): Promise<Species> => {
@@ -22,7 +25,8 @@ export const speciesService = {
       apiEndpoints.updateSpecies(species.id),
       species
     );
-    return response.data;
+    const validatedData = SpeciesSchema.parse(response.data);
+    return validatedData;
   },
 
   delete: async (id: string): Promise<string> => {
