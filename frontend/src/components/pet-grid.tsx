@@ -34,6 +34,7 @@ export default function PetGrid({ onEdit }: PetGridProps) {
 
   const handleAdoptClick = (pet: Pet) => {
     setPetToAdopt(pet);
+    setPetId(null);
   };
 
   const confirmDelete = () => {
@@ -46,13 +47,6 @@ export default function PetGrid({ onEdit }: PetGridProps) {
   const confirmAdopt = () => {
     if (petToAdopt && petToAdopt.id) {
       onAdopt(petToAdopt.id);
-    }
-  };
-
-  const handleAdoptFromDetails = () => {
-    if (petIdToView) {
-      onAdopt(petIdToView);
-      setPetId(null);
     }
   };
 
@@ -115,7 +109,7 @@ export default function PetGrid({ onEdit }: PetGridProps) {
         <PetDetailsModal
           petId={petIdToView}
           onClose={() => setPetId(null)}
-          onAdopt={handleAdoptFromDetails}
+          onAdopt={handleAdoptClick}
         />
       )}
     </>

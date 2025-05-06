@@ -1,6 +1,5 @@
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import type React from "react";
-
-import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface SearchableDropdownProps {
@@ -12,6 +11,7 @@ interface SearchableDropdownProps {
   placeholder: string;
   error?: string;
   onAddOption?: (value: string) => void;
+  loading?: boolean; // <-- Added loading prop
 }
 
 export default function SearchableDropdown({
@@ -23,13 +23,13 @@ export default function SearchableDropdown({
   placeholder,
   error,
   onAddOption,
+  loading = false, // <-- Default false
 }: SearchableDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState(value);
   const [filteredOptions, setFilteredOptions] = useState<string[]>(options);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Filter options when search term changes
   useEffect(() => {
     if (searchTerm === "") {
       setFilteredOptions(options);
@@ -41,7 +41,6 @@ export default function SearchableDropdown({
     }
   }, [searchTerm, options]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -50,7 +49,6 @@ export default function SearchableDropdown({
       ) {
         setIsOpen(false);
 
-        // If the search term is not in options and not empty, add it as a new option
         if (
           searchTerm &&
           !options.some(
@@ -114,7 +112,12 @@ export default function SearchableDropdown({
 
       {isOpen && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
-          {filteredOptions.length > 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center py-3 text-sm text-gray-500">
+              <Loader2 className="animate-spin mr-2" size={16} />
+              Loading...
+            </div>
+          ) : filteredOptions.length > 0 ? (
             <ul className="py-1">
               {filteredOptions.map((option, index) => (
                 <li

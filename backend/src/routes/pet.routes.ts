@@ -7,10 +7,7 @@ const router = express.Router();
 // Pet routes
 router.post("/", PetController.createPet);
 router.get("/", PetController.getAllPets);
-router.get("/:id", PetController.getPetById);
-router.put("/:id", PetController.updatePet);
-router.delete("/:id", PetController.deletePet);
-router.patch("/:id/adopt", PetController.adoptPet);
+router.get("/unadopt-all", PetController.unadoptAllPets);
 
 // Filter pets by mood
 router.get("/filter", PetController.filterPetsByMood);
@@ -25,5 +22,10 @@ router.post("/update-moods", (req, res) => {
     res.status(403).json({ error: "Not allowed in production" });
   }
 });
+
+router.get("/:id", PetController.getPetById);
+router.put("/:id", PetController.updatePet);
+router.delete("/:id", PetController.deletePet);
+router.patch("/:id/adopt", PetController.adoptPet);
 
 export default router;

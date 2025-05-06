@@ -2,6 +2,7 @@ import type React from "react";
 
 import type { Pet } from "@/types/pet";
 import confetti from "canvas-confetti";
+import { jsPDF } from "jspdf";
 import { Download, Heart } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -16,8 +17,10 @@ export default function AdoptionModal({
   onConfirm,
   onCancel,
 }: AdoptionModalProps) {
-  const [showCertificate, setShowCertificate] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const certificateRef = useRef<HTMLDivElement>(null);
+
+  const [showCertificate, setShowCertificate] = useState(false);
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget && !showCertificate) {
@@ -75,6 +78,49 @@ export default function AdoptionModal({
     });
   };
 
+  const handleDownload = async () => {
+    const doc = new jsPDF();
+
+    // Set up the certificate content
+    const title = "Certificate of Adoption";
+    const subTitle = "Virtual Pet Adoption Center";
+    const mainContent = `This certifies that YOU have officially adopted\n\n${
+      pet.name
+    } the ${pet.species.name}\n\non ${formatDate(new Date())}`;
+    const footer = `Thank you for giving ${pet.name} a loving virtual home!`;
+
+    // Customize the document's fonts and styles
+    doc.setFont("helvetica");
+    doc.setFontSize(22);
+    doc.text(title, 20, 30); // Title
+
+    doc.setFontSize(16);
+    doc.text(subTitle, 20, 50); // Sub-title
+
+    doc.setFontSize(14);
+    doc.text(mainContent, 20, 70); // Main content
+
+    doc.setFontSize(12);
+    doc.text(footer, 20, 150); // Footer
+    doc.setTextColor(100);
+    doc.text(`Adopted on ${formatDate(new Date())}`, 20, 160); // Adoption date
+    doc.setTextColor(0);
+    doc.setFontSize(10);
+    doc.text("Virtual Pet Adoption Center", 20, 170); // Footer text
+    doc.setTextColor(150);
+    doc.text("Thank you for giving a virtual pet a loving home!", 20, 180); // Footer text
+    doc.setTextColor(0);
+    doc.setFontSize(8);
+    doc.text(`Generated on ${formatDate(new Date())}`, 20, 190); // Generated date
+    doc.setTextColor(150);
+    doc.text(`Pet ID: ${pet.id}`, 20, 200); // Pet ID
+    doc.setTextColor(0);
+    doc.setFontSize(8);
+
+    // Save the PDF with the name based on the pet's name
+    await doc.save(`Adoption_Certificate_${pet.name}.pdf`);
+  };
+
   return (
     <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto"
@@ -118,7 +164,10 @@ export default function AdoptionModal({
           </div>
         ) : (
           <div className="p-6">
-            <div className="border-4 border-double border-purple-200 p-6 mb-4 bg-purple-50 text-center">
+            <div
+              ref={certificateRef}
+              className="border-4 border-double border-purple-200 p-6 mb-4 bg-purple-50 text-center"
+            >
               <h2 className="text-2xl font-bold text-purple-800 mb-1">
                 Certificate of Adoption
               </h2>
@@ -145,9 +194,15 @@ export default function AdoptionModal({
               </p>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-3">
               <button
                 onClick={onCancel}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Exit
+              </button>
+              <button
+                onClick={handleDownload}
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-1"
               >
                 <Download size={16} />

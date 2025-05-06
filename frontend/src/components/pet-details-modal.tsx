@@ -3,6 +3,7 @@
 import type React from "react";
 
 import { usePetById } from "@/hooks/usePetById";
+import { Pet } from "@/types/pet";
 import { format, formatDistanceToNow } from "date-fns";
 import { Calendar, Clock, Heart, X } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -13,7 +14,7 @@ import { PetImage } from "./pet-image";
 interface PetDetailsModalProps {
   petId: string;
   onClose: () => void;
-  onAdopt?: () => void; // Add onAdopt prop
+  onAdopt: (pet: Pet) => void; // Add onAdopt prop
 }
 
 export default function PetDetailsModal({
@@ -32,7 +33,8 @@ export default function PetDetailsModal({
   }, [isError, error]);
 
   const handleAdoptClick = () => {
-    onAdopt?.();
+    if (!pet) return;
+    onAdopt(pet);
     onClose();
   };
 
@@ -99,15 +101,24 @@ export default function PetDetailsModal({
 
         <div className="flex flex-col md:flex-row">
           <div className="md:w-1/2">
-            <div className="relative">
-              <PetImage
-                image={pet.image}
-                name={pet.name}
-                species={pet.species.name}
-                className="w-full h-64 md:h-80 object-cover"
+            <div className="relative w-full h-64 md:h-[50vh] overflow-hidden">
+              {/* Background image with blur */}
+              <div
+                className="absolute inset-0 bg-cover bg-center filter blur-xl scale-105 z-0"
+                style={{ backgroundImage: `url(${pet.image})` }}
               />
-              <div className="absolute top-4 right-4">
-                <MoodBadge mood={pet.mood} />
+
+              {/* Foreground content */}
+              <div className="relative z-10">
+                <PetImage
+                  image={pet.image}
+                  name={pet.name}
+                  species={pet.species.name}
+                  className="w-full h-64 md:h-[50vh] object-scale-down"
+                />
+                <div className="absolute top-4 right-4">
+                  <MoodBadge mood={pet.mood} />
+                </div>
               </div>
             </div>
           </div>

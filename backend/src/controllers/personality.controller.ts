@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { isValidObjectId } from "mongoose";
 import { personalityService } from "../services/personality.service";
 
 export const PersonalityController = {
@@ -17,6 +18,9 @@ export const PersonalityController = {
   async getPersonalityById(req: Request, res: Response) {
     try {
       const { id } = req.params;
+      if (!isValidObjectId(id)) {
+        return res.status(400).json({ error: "Invalid Personality ID" });
+      }
       const personality = await personalityService.getPersonalityById(id);
       if (!personality) {
         return res.status(404).json({ error: "Personality not found" });
@@ -43,6 +47,9 @@ export const PersonalityController = {
   async updatePersonality(req: Request, res: Response) {
     try {
       const { id } = req.params;
+      if (!isValidObjectId(id)) {
+        return res.status(400).json({ error: "Invalid Personality ID" });
+      }
       const updatedPersonality = await personalityService.updatePersonality(
         id,
         req.body
@@ -61,6 +68,9 @@ export const PersonalityController = {
   async deletePersonality(req: Request, res: Response) {
     try {
       const { id } = req.params;
+      if (!isValidObjectId(id)) {
+        return res.status(400).json({ error: "Invalid Personality ID" });
+      }
       const deleted = await personalityService.deletePersonality(id);
       if (!deleted) {
         return res.status(404).json({ error: "Personality not found" });

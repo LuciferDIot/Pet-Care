@@ -1,10 +1,6 @@
 // stores/pet-store.ts
 import { SortOption } from "@/components/sort-dropdown";
-import {
-  calculateMood,
-  defaultPersonalities,
-  defaultSpecies,
-} from "@/lib/pet-utils";
+import { calculateMood } from "@/lib/pet-utils";
 import { MoodEnum, Personality, Pet, Species } from "@/types/pet";
 import { create } from "zustand";
 
@@ -40,8 +36,8 @@ interface PetStore {
 export const usePetStore = create<PetStore>((set) => ({
   pets: [],
   filteredPets: [],
-  speciesList: defaultSpecies,
-  personalityList: defaultPersonalities,
+  speciesList: [],
+  personalityList: [],
   selectedMood: "all",
   selectedSort: "newest",
   isLoading: true,
@@ -65,7 +61,7 @@ export const usePetStore = create<PetStore>((set) => ({
         pet.id === updatedPet.id
           ? {
               ...updatedPet,
-              mood: calculateMood(updatedPet.created_at),
+              mood: calculateMood(updatedPet.created_at, updatedPet.adopted),
             }
           : pet
       ),

@@ -50,7 +50,7 @@ export class MoodUpdateService {
       const pets = await PetModel.find().lean();
 
       for (const pet of pets) {
-        const newMood = calculateMood(pet.created_at);
+        const newMood = calculateMood(pet.created_at, pet.adopted);
         if (newMood !== pet.mood) {
           await PetModel.updateOne(
             { _id: pet._id },

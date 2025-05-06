@@ -1,7 +1,7 @@
 import PersonalityModel from "../models/personalityModel";
 import PetModel from "../models/petModel";
 import SpeciesModel from "../models/speciesModel";
-import { Personality, Pet, PopulatedPet, Species } from "../types";
+import { Pet, PopulatedPet } from "../types";
 import { calculateMood } from "../utils/moodLogic";
 
 export const PetService = {
@@ -126,6 +126,31 @@ export const PetService = {
     }
   },
 
+  // Unadopt all pets
+  async unadoptAllPets(): Promise<Pet[]> {
+    try {
+      await PetModel.updateMany(
+        {},
+        {
+          adopted: false,
+          adoption_date: null,
+        }
+      );
+
+      const pets = await PetModel.find()
+        .populate("species")
+        .populate("personality")
+        .lean();
+
+      return pets.map((pet) =>
+        this.mapToPetDTO(pet as unknown as PopulatedPet)
+      );
+    } catch (error) {
+      console.error("Error unadopting all pets:", error);
+      throw error;
+    }
+  },
+
   // Filter pets by mood
   async filterPetsByMood(mood: string): Promise<Pet[]> {
     try {
@@ -197,7 +222,7 @@ export const PetService = {
         id: pet.personality._id.toString(),
         name: pet.personality.name,
       },
-      mood: calculateMood(pet.created_at),
+      mood: calculateMood(pet.created_at, pet.adopted),
       adopted: pet.adopted,
       adoption_date: pet.adoption_date,
       created_at: pet.created_at,

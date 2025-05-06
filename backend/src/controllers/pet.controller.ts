@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { isValidObjectId } from "mongoose";
 import { PetService } from "../services/pet.service";
 
 export const PetController = {
@@ -42,6 +43,9 @@ export const PetController = {
   async getPetById(req: Request, res: Response) {
     try {
       const { id } = req.params;
+      if (!isValidObjectId(id)) {
+        return res.status(400).json({ error: "Invalid Pet ID" });
+      }
       const pet = await PetService.getPetById(id);
 
       if (!pet) {
@@ -61,6 +65,10 @@ export const PetController = {
       const { id } = req.params;
       const petData = req.body;
 
+      if (!isValidObjectId(id)) {
+        return res.status(400).json({ error: "Invalid Pet ID" });
+      }
+
       const updatedPet = await PetService.updatePet(id, petData);
       res.json(updatedPet);
     } catch (error: any) {
@@ -76,6 +84,11 @@ export const PetController = {
   async deletePet(req: Request, res: Response) {
     try {
       const { id } = req.params;
+
+      if (!isValidObjectId(id)) {
+        return res.status(400).json({ error: "Invalid Pet ID" });
+      }
+
       await PetService.deletePet(id);
       res.json({ message: "Pet deleted successfully" });
     } catch (error: any) {
@@ -91,6 +104,11 @@ export const PetController = {
   async adoptPet(req: Request, res: Response) {
     try {
       const { id } = req.params;
+
+      if (!isValidObjectId(id)) {
+        return res.status(400).json({ error: "Invalid Pet ID" });
+      }
+
       const adoptedPet = await PetService.adoptPet(id);
       res.json(adoptedPet);
     } catch (error: any) {
@@ -99,6 +117,17 @@ export const PetController = {
       }
       console.error("Error adopting pet:", error);
       res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
+  // Unadopt pet
+  async unadoptAllPets(req: Request, res: Response) {
+    try {
+      const pets = await PetService.unadoptAllPets();
+      res.status(200).json(pets);
+    } catch (error) {
+      console.error("Error in unadopt-all route:", error);
+      res.status(500).json({ error: "Failed to unadopt all pets" });
     }
   },
 

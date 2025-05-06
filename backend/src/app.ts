@@ -27,11 +27,9 @@ app.use(
 // Handling preflight requests
 app.options("*", cors()); // Allow CORS preflight requests
 
-app.use(
-  bodyParser.json({
-    limit: "10kb",
-  })
-);
+// Increase the payload limit (e.g., to 10MB)
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 // Routes
 app.use("/api/pets", petRoutes);
