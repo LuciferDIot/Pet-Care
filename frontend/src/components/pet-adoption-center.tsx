@@ -11,26 +11,27 @@ import PetGrid from "./pet-grid";
 import type { SortOption } from "./sort-dropdown";
 
 export default function PetAdoptionCenter() {
-  const {
-    pets,
-    selectedMood,
-    selectedSort,
-    isAddingPet,
-    editingPet,
-    setSelectedMood,
-    setSelectedSort,
-    setIsAddingPet,
-    setEditingPet,
-    setFilteredPets,
-  } = usePetStore();
+  // Use Zustand selectors to reduce re-renders
+  const pets = usePetStore((state) => state.pets);
+  const selectedMood = usePetStore((state) => state.selectedMood);
+  const selectedSort = usePetStore((state) => state.selectedSort);
+  const isAddingPet = usePetStore((state) => state.isAddingPet);
+  const editingPet = usePetStore((state) => state.editingPet);
+  const setSelectedMood = usePetStore((state) => state.setSelectedMood);
+  const setSelectedSort = usePetStore((state) => state.setSelectedSort);
+  const setIsAddingPet = usePetStore((state) => state.setIsAddingPet);
+  const setEditingPet = usePetStore((state) => state.setEditingPet);
+  const setFilteredPets = usePetStore((state) => state.setFilteredPets);
+  const setPets = usePetStore((state) => state.setPets);
 
   const petsQuery = usePetsQuery();
 
   // Update moods based on time in system
   useEffect(() => {
     const interval = setInterval(() => {
-      usePetStore.getState().setPets(
-        pets.map((pet) => ({
+      console.log("Updating pet moods..."); // Debugging
+      setPets(
+        usePetStore.getState().pets.map((pet) => ({
           ...pet,
           mood: calculateMood(pet.created_at, pet.adopted),
         }))
@@ -38,7 +39,7 @@ export default function PetAdoptionCenter() {
     }, 5 * 60 * 60 * 1000); // Check every 5 hours
 
     return () => clearInterval(interval);
-  }, [pets]);
+  }, [setPets]); // Depend only on setPets to avoid re-running unnecessarily
 
   // Filter and sort pets when pets, filter, or sort changes
   useEffect(() => {
@@ -54,6 +55,11 @@ export default function PetAdoptionCenter() {
     setFilteredPets(result);
   }, [selectedMood, selectedSort, pets, setFilteredPets]);
 
+  useEffect(() => {
+    console.log("Pets isLoading:", petsQuery.isLoading);
+  }, [petsQuery.isLoading]);
+
+  // Function to sort an array of pets based on a given sort option
   const sortPets = (petsToSort: Pet[], sortOption: SortOption): Pet[] => {
     const sorted = [...petsToSort];
 

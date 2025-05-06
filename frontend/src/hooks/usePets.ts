@@ -10,17 +10,7 @@ export const usePetsQuery = () => {
 
   const queryResult = useQuery<Pet[], Error>({
     queryKey: ["pets"],
-    queryFn: async () => {
-      setIsLoading(true);
-      try {
-        const data = await petService.fetchAll();
-        setPets(data);
-        setFilteredPets(data);
-        return data;
-      } finally {
-        setIsLoading(false);
-      }
-    },
+    queryFn: async () => await petService.fetchAll(),
     staleTime: 5 * 60 * 1000,
   });
 
@@ -28,7 +18,26 @@ export const usePetsQuery = () => {
     if (queryResult.isError) {
       setError(queryResult.error?.message || "Error loading pets");
     }
-  }, [queryResult.isError, queryResult.error, setError]);
+    if (queryResult.isSuccess) {
+      setPets(queryResult.data);
+      setFilteredPets(queryResult.data);
+    }
+    if (queryResult.isLoading) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+  }, [
+    queryResult.data,
+    queryResult.error?.message,
+    queryResult.isError,
+    queryResult.isLoading,
+    queryResult.isSuccess,
+    setError,
+    setFilteredPets,
+    setIsLoading,
+    setPets,
+  ]);
 
   return queryResult;
 };

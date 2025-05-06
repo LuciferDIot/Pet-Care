@@ -7,8 +7,16 @@ import { Pet } from "@/types/pet";
 // Pet endpoints
 export const petService = {
   fetchAll: async (): Promise<Pet[]> => {
+    console.log("Fetching all pets..."); // Debugging
+
     const response = await api.get(apiEndpoints.getAllPets);
+
     const validatedData = PetArraySchema.parse(response.data);
+
+    if (!validatedData || !Array.isArray(validatedData)) {
+      throw new Error("Invalid data format: Expected an array of pets.");
+    }
+
     return validatedData;
   },
 

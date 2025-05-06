@@ -1,7 +1,7 @@
 import { MoodEnum } from "@/types/pet";
 import { z } from "zod";
-import { SpeciesSchema } from "./species.schema";
 import { PersonalitySchema } from "./personality.schema";
+import { SpeciesSchema } from "./species.schema";
 
 // Zod schemas
 const MoodEnumSchema = z.nativeEnum(MoodEnum);
@@ -17,6 +17,7 @@ export const PetSchema = z.object({
   adopted: z.boolean(),
   adoption_date: z
     .string()
+    .nullable()
     .optional()
     .transform((val) => (val ? new Date(val) : undefined)),
   created_at: z.string().transform((val) => new Date(val)),

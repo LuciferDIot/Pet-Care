@@ -126,6 +126,31 @@ export const PetService = {
     }
   },
 
+  // Unadopt all pets
+  async unadoptAllPets(): Promise<Pet[]> {
+    try {
+      await PetModel.updateMany(
+        {},
+        {
+          adopted: false,
+          adoption_date: null,
+        }
+      );
+
+      const pets = await PetModel.find()
+        .populate("species")
+        .populate("personality")
+        .lean();
+
+      return pets.map((pet) =>
+        this.mapToPetDTO(pet as unknown as PopulatedPet)
+      );
+    } catch (error) {
+      console.error("Error unadopting all pets:", error);
+      throw error;
+    }
+  },
+
   // Filter pets by mood
   async filterPetsByMood(mood: string): Promise<Pet[]> {
     try {

@@ -78,7 +78,7 @@ export default function AdoptionModal({
     });
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     const doc = new jsPDF();
 
     // Set up the certificate content
@@ -117,11 +117,8 @@ export default function AdoptionModal({
     doc.setTextColor(0);
     doc.setFontSize(8);
 
-    // Add an image or a logo (optional)
-    // doc.addImage('path/to/logo.png', 'PNG', 10, 10, 50, 50);
-
     // Save the PDF with the name based on the pet's name
-    doc.save(`Adoption_Certificate_${pet.name}.pdf`);
+    await doc.save(`Adoption_Certificate_${pet.name}.pdf`);
   };
 
   return (
@@ -197,7 +194,13 @@ export default function AdoptionModal({
               </p>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-3">
+              <button
+                onClick={onCancel}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Exit
+              </button>
               <button
                 onClick={handleDownload}
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-1"
