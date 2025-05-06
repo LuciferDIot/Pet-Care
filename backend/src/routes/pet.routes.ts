@@ -1,5 +1,6 @@
 import express from "express";
 import { PetController } from "../controllers/pet.controller";
+import { MoodUpdateService } from "../services/moodUpdate.service";
 
 const router = express.Router();
 
@@ -19,5 +20,16 @@ router.get("/personalities", PetController.getAllPersonalities);
 
 // Species routes
 router.get("/species", PetController.getAllSpecies);
+
+// Test route for manual mood update trigger
+router.post("/pets/update-moods", (req, res) => {
+  if (process.env.NODE_ENV !== "production") {
+    const moodUpdateService = MoodUpdateService.getInstance();
+    moodUpdateService.triggerManualUpdate();
+    res.json({ message: "Manual mood update triggered" });
+  } else {
+    res.status(403).json({ error: "Not allowed in production" });
+  }
+});
 
 export default router;

@@ -1,5 +1,6 @@
 import app from "./app";
 import { connectToDatabase } from "./config/db";
+import { MoodUpdateService } from "./services/moodUpdate.service";
 
 connectToDatabase(process.env.MONGODB_URI as string).then(async () => {
   console.log("Connected to MongoDB database");
@@ -10,6 +11,10 @@ connectToDatabase(process.env.MONGODB_URI as string).then(async () => {
     await PetService.initializeData();
     console.log("Sample data initialized");
   }
+
+  // Start mood update scheduler
+  const moodUpdateService = MoodUpdateService.getInstance();
+  moodUpdateService.start();
 
   // Start the server
   app.listen(process.env.HTTP_PORT, () => {
