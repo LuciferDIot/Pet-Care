@@ -1,6 +1,10 @@
 import { MoodEnum } from "../types";
 
-export function calculateMood(createdAt: Date): MoodEnum {
+export function calculateMood(createdAt: Date, isAdopted: boolean): MoodEnum {
+  if (isAdopted) {
+    return MoodEnum.Happy;
+  }
+
   const now = new Date();
   const diffInHours = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
 

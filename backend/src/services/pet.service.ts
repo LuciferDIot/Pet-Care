@@ -1,7 +1,7 @@
 import PersonalityModel from "../models/personalityModel";
 import PetModel from "../models/petModel";
 import SpeciesModel from "../models/speciesModel";
-import { Personality, Pet, PopulatedPet, Species } from "../types";
+import { Pet, PopulatedPet } from "../types";
 import { calculateMood } from "../utils/moodLogic";
 
 export const PetService = {
@@ -197,7 +197,7 @@ export const PetService = {
         id: pet.personality._id.toString(),
         name: pet.personality.name,
       },
-      mood: calculateMood(pet.created_at),
+      mood: calculateMood(pet.created_at, pet.adopted),
       adopted: pet.adopted,
       adoption_date: pet.adoption_date,
       created_at: pet.created_at,

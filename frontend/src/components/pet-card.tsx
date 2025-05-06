@@ -69,14 +69,14 @@ export default function PetCard({
       </div>
 
       <div className="p-5">
-        <div className="flex justify-between items-start mb-2">
+        <div className="h-10 flex justify-between items-start mb-2">
           <h3 className="text-xl font-bold text-gray-800">{pet.name}</h3>
           <span className="text-sm font-medium text-gray-500">
             {pet.age} years
           </span>
         </div>
 
-        <p className="text-gray-600 mb-2">
+        <p className="text-left text-gray-600 mb-2">
           {pet.species.name} • {pet.personality.name}
         </p>
 

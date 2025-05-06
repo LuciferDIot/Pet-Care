@@ -32,10 +32,10 @@ export default function PetAdoptionCenter() {
       usePetStore.getState().setPets(
         pets.map((pet) => ({
           ...pet,
-          mood: calculateMood(pet.created_at),
+          mood: calculateMood(pet.created_at, pet.adopted),
         }))
       );
-    }, 60000); // Check every minute
+    }, 5 * 60 * 60 * 1000); // Check every 5 hours
 
     return () => clearInterval(interval);
   }, [pets]);
@@ -43,7 +43,6 @@ export default function PetAdoptionCenter() {
   // Filter and sort pets when pets, filter, or sort changes
   useEffect(() => {
     if (pets.length === 0) return;
-    else console.log(pets);
 
     let result = [...pets];
 

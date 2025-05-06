@@ -1,5 +1,5 @@
 import { getSpeciesImage } from "@/lib/pet-utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Props interface for the component
 interface PetImageProps {
@@ -24,6 +24,11 @@ export const PetImage: React.FC<PetImageProps> = ({
   const [imgSrc, setImgSrc] = useState<string>(
     getSpeciesImage(species, image, w, h)
   );
+
+  useEffect(() => {
+    // Update the image source when the species or image prop changes
+    setImgSrc(getSpeciesImage(species, image, w, h));
+  }, [species, image, w, h]);
 
   // Handle image load error
   const handleImageError = () => {

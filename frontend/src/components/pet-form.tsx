@@ -1,6 +1,8 @@
 "use client";
 
+import { usePersonalitiesQuery } from "@/hooks/usePersonalities";
 import { usePetMutations } from "@/hooks/usePets";
+import { useSpeciesQuery } from "@/hooks/useSpecies";
 import { petCreateFormSchema, PetFormValues } from "@/schema/pet-form.schema";
 import { usePetStore } from "@/stores/pet-store";
 import { MoodEnum, type Pet } from "@/types/pet";
@@ -8,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Upload, X } from "lucide-react";
 import { useRef } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { toast } from "react-toastify";
 import { PetImage } from "./pet-image";
 import SearchableDropdown from "./searchable-dropdown";
 
@@ -25,20 +28,29 @@ export default function PetForm({ onCancel }: PetFormProps) {
     setEditingPet,
   } = usePetStore();
 
+  const personalityQuery = usePersonalitiesQuery();
+  const speciesQuery = useSpeciesQuery();
+
   const defaultValues = editingPet
     ? {
         name: editingPet.name,
-        species: editingPet.species.name,
+        species: editingPet.species,
         age: editingPet.age,
-        personality: editingPet.personality.name,
+        personality: editingPet.personality,
         description: editingPet.description,
         image: editingPet.image,
       }
     : {
         name: "",
-        species: "",
+        species: {
+          id: "",
+          name: "",
+        },
         age: 0,
-        personality: "",
+        personality: {
+          id: "",
+          name: "",
+        },
         description: "",
         image: "",
       };
@@ -73,16 +85,8 @@ export default function PetForm({ onCancel }: PetFormProps) {
       mood: MoodEnum.Happy,
       id: editingPet?.id || "",
       adopted: editingPet?.adopted || false,
-      personality:
-        personalityList.find((p) => p.name === data.personality) ??
-        (() => {
-          throw new Error("Personality not found");
-        })(),
-      species:
-        speciesList.find((s) => s.name === data.species) ??
-        (() => {
-          throw new Error("Species not found");
-        })(),
+      personality: data.personality,
+      species: data.species,
       created_at: editingPet?.created_at || new Date(),
       ...(editingPet?.id
         ? {
@@ -102,6 +106,20 @@ export default function PetForm({ onCancel }: PetFormProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // ✅ Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload a valid image file.");
+      return;
+    }
+
+    // ✅ Validate file size (max 5MB)
+    const maxSizeMB = 5;
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      toast.error("Image size should not exceed 5MB.");
+      return;
+    }
+
+    // ✅ Read image if valid
     const reader = new FileReader();
     reader.onloadend = () => {
       const imageUrl = reader.result as string;
@@ -148,7 +166,7 @@ export default function PetForm({ onCancel }: PetFormProps) {
               <PetImage
                 image={image || editingPet?.image}
                 name={editingPet?.name || "Form Preview"}
-                species={species}
+                species={species.name}
                 className="w-full h-full object-cover rounded-lg border"
               />
               <label
@@ -214,12 +232,13 @@ export default function PetForm({ onCancel }: PetFormProps) {
                   id="species"
                   {...field}
                   options={speciesList.map((s) => s.name)}
-                  value={field.value}
+                  value={field.value.name}
                   onChange={(value: string) =>
                     field.onChange(speciesList.find((s) => s.name === value))
                   }
                   placeholder="Dog, Cat, Rabbit, etc."
-                  error={errors.species?.message}
+                  error={errors.species?.name?.message}
+                  loading={speciesQuery.isLoading}
                 />
               )}
             />
@@ -272,14 +291,15 @@ export default function PetForm({ onCancel }: PetFormProps) {
                   id="personality"
                   options={personalityList.map((p) => p.name)}
                   {...field}
-                  value={field.value}
+                  value={field.value.name}
                   onChange={(value: string) =>
                     field.onChange(
                       personalityList.find((p) => p.name === value)
                     )
                   }
                   placeholder="Describe the pet's personality"
-                  error={errors.personality?.message}
+                  error={errors.personality?.name?.message}
+                  loading={personalityQuery.isLoading}
                 />
               )}
             />
