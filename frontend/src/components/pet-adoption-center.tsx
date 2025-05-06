@@ -106,7 +106,7 @@ export default function PetAdoptionCenter() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <main className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-purple-800 mb-4 flex items-center justify-center gap-2">
           <Sparkles className="h-8 w-8 text-yellow-500" />
@@ -165,6 +165,20 @@ export default function PetAdoptionCenter() {
       {isAddingPet && <PetForm onCancel={() => setIsAddingPet(false)} />}
 
       {editingPet && <PetForm onCancel={() => setEditingPet(null)} />}
-    </div>
+
+      <footer className="mt-16 text-center text-sm text-gray-500 border-t pt-4">
+        <p>
+          Created by{" "}
+          <a
+            href="https://pasindugeevinda.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-purple-600 hover:underline"
+          >
+            Pasindu Geenvinda
+          </a>
+        </p>
+      </footer>
+    </main>
   );
 }
