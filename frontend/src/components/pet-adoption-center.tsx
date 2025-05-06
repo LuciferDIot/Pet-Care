@@ -42,6 +42,9 @@ export default function PetAdoptionCenter() {
 
   // Filter and sort pets when pets, filter, or sort changes
   useEffect(() => {
+    if (pets.length === 0) return;
+    else console.log(pets);
+
     let result = [...pets];
 
     if (selectedMood !== "all") {

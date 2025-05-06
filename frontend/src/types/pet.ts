@@ -5,7 +5,7 @@ export enum MoodEnum {
 }
 
 export interface Pet {
-  id: string;
+  id?: string;
   name: string;
   species: Species;
   description: string;

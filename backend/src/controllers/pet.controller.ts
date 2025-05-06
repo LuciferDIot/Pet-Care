@@ -120,26 +120,4 @@ export const PetController = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
-
-  // Get all personalities
-  async getAllPersonalities(req: Request, res: Response) {
-    try {
-      const personalities = await PetService.getAllPersonalities();
-      res.json(personalities);
-    } catch (error) {
-      console.error("Error fetching personalities:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  },
-
-  // Get all species
-  async getAllSpecies(req: Request, res: Response) {
-    try {
-      const species = await PetService.getAllSpecies();
-      res.json(species);
-    } catch (error) {
-      console.error("Error fetching species:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  },
 };

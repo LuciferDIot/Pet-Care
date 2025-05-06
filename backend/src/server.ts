@@ -1,6 +1,7 @@
 import app from "./app";
 import { connectToDatabase } from "./config/db";
 import { MoodUpdateService } from "./services/moodUpdate.service";
+import { seedDefaultReferences } from "./utils/seedDefaults";
 
 connectToDatabase(process.env.MONGODB_URI as string).then(async () => {
   console.log("Connected to MongoDB database");
@@ -11,6 +12,9 @@ connectToDatabase(process.env.MONGODB_URI as string).then(async () => {
     await PetService.initializeData();
     console.log("Sample data initialized");
   }
+
+  // Seed default references
+  await seedDefaultReferences();
 
   // Start mood update scheduler
   const moodUpdateService = MoodUpdateService.getInstance();

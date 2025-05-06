@@ -139,34 +139,6 @@ export const PetService = {
     }
   },
 
-  // Get all personalities
-  async getAllPersonalities(): Promise<Personality[]> {
-    try {
-      const personalities = await PersonalityModel.find().lean();
-      return personalities.map((p) => ({
-        id: p._id.toString(),
-        name: p.name,
-      }));
-    } catch (error) {
-      console.error("Error fetching personalities:", error);
-      throw error;
-    }
-  },
-
-  // Get all species
-  async getAllSpecies(): Promise<Species[]> {
-    try {
-      const species = await SpeciesModel.find().lean();
-      return species.map((s) => ({
-        id: s._id.toString(),
-        name: s.name,
-      }));
-    } catch (error) {
-      console.error("Error fetching species:", error);
-      throw error;
-    }
-  },
-
   // Initialize database with sample data
   async initializeData(): Promise<void> {
     try {

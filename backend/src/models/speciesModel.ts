@@ -4,7 +4,7 @@ import mongoose, { Document, Schema } from "mongoose";
  * @interface ISpecies
  * @property {string} name - The species name
  */
-interface ISpecies extends Document {
+export interface ISpecies extends Document {
   name: string;
 }
 
