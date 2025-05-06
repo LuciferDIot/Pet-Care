@@ -1,5 +1,5 @@
 // hooks/useSpecies.ts
-import { speciesService } from "@/services/petServices";
+import { speciesService } from "@/services/species.service";
 import { usePetStore } from "@/stores/pet-store";
 import { Species } from "@/types/pet";
 import { useMutation, useQuery } from "@tanstack/react-query";

@@ -1,4 +1,4 @@
-import { petService } from "@/services/petServices";
+import { petService } from "@/services/pet.service";
 import { usePetStore } from "@/stores/pet-store";
 import { Pet } from "@/types/pet";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -69,8 +69,12 @@ export const usePetMutations = () => {
   const adoptPetMutation = useMutation({
     mutationFn: petService.adopt,
     onSuccess: (updatedPet) => {
-      adoptPet(updatedPet.id);
-      toast.success("Pet adopted successfully!");
+      if (updatedPet.id) {
+        adoptPet(updatedPet.id);
+        toast.success("Pet adopted successfully!");
+      } else {
+        toast.error("Pet ID is missing, adoption failed.");
+      }
     },
     onError: (error: Error) => toast.error(error.message),
   });

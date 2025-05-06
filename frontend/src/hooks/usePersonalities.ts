@@ -1,5 +1,5 @@
 // hooks/usePersonalities.ts
-import { personalityService } from "@/services/petServices";
+import { personalityService } from "@/services/personality.service";
 import { usePetStore } from "@/stores/pet-store";
 import { Personality } from "@/types/pet";
 import { useMutation, useQuery } from "@tanstack/react-query";

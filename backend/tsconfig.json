@@ -15,5 +15,9 @@
     "allowImportingTsExtensions": true, // Allows importing TypeScript files without specifying the extension
     "noEmit": true // Do not emit outputs
   },
-  "include": ["src/**/*"]
+  "exclude": ["node_modules", "dist"],
+  "include": [
+    "src/**/*.ts", // Include all TypeScript files in the src directory and subdirectories
+    "test/**/*.ts" // Include all TypeScript files in the test directory and subdirectories
+  ]
 }
